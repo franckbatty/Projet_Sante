@@ -44,6 +44,7 @@ CREATE TABLE sante_bronze.patient
 );
 SELECT * FROM sante_bronze.patient;
 SELECT COUNT(*) FROM sante_bronze.patient;
+
 --- TABLE TRAITEMENTS
 CREATE TABLE sante_bronze.traitement
 (
@@ -64,4 +65,5 @@ CREATE TABLE sante_bronze.medecins
  	service_medical VARCHAR(250)
 ); 
 
-SELECT * FROM sante_bronze.medecins
+SELECT * FROM sante_bronze.medecins;
+SELECT COUNT(*) FROM sante_bronze.medecins;
