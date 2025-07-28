@@ -12,7 +12,7 @@ class Consultation(Base):
         PrimaryKeyConstraint('consultation_id', 'patient_id', 'medecin_id', 'diagnostic_id'),
         {'schema': 'sante_gold'}
     )
-    ## consultation_id est la clé primaire de ma table de fait sur la couche gold à laquelle je calcule ma mesure.
+    ## consultation_id est la clé primaire de ma table de fait de la couche gold à laquelle je calcule ma mesure.
     consultation_id = Column(Integer)
     patient_id = Column(Integer, ForeignKey('sante_gold.dim_patient.patient_id'))
     medecin_id = Column(Integer, ForeignKey('sante_gold.dim_medecins.medecin_id'))
