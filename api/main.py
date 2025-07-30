@@ -4,12 +4,10 @@
 from fastapi import FastAPI, Depends, HTTPException, Query, Path 
 from sqlalchemy.orm import Session 
 from typing import List, Optional
-from .database import SessionLocal 
+from database import SessionLocal 
 from datetime import date
-from . import query_helpers as helpers
-from . import schemas 
-from . import models
-
+import query_helpers as helpers 
+import schemas 
 
 api_description = """ 
 Bienvenue dans l'API Sante 
