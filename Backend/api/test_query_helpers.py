@@ -1,3 +1,4 @@
+
 #%%
 # Tester les fonctions d'aide pour l'API RESTful
 from database import SessionLocal
@@ -15,7 +16,7 @@ print(f"consultation_id : {consultation.consultation_id}, patient_id : {consulta
 # Récupèrer une liste de consultation avec des filtres optionnels.
 consultations = get_consultations(db, skip=0, limit=5)
 for consultation in consultations: 
-    print(f"consultation_id : {consultation.consultation_id}, patient_id : {consultation.patient_id}, medecin_id : {consultation.medecin_id}, diagnostic_id : {consultation.diagnostic_id}")
+    print(f"consultation_id : {consultation.consultation_id}, patient_id : {consultation.patient_id}, medecin_id : {consultation.medecin_id}, diagnostic_id : {consultation.diagnostic_id}, date_consultation : {consultation.date_consultation}, frais consultation : {consultation.sum}")
 
 #%%
 # Récuperer un patient par son id

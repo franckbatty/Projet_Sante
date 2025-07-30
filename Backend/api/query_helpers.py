@@ -5,7 +5,7 @@
 from sqlalchemy.orm import Session # pour interagir avec la base de données
 from sqlalchemy.orm import joinedload # permet de charger les relations en une seule requête pour éviter les requêtes N+1
 from typing import Optional # pour les types optionnels c'est-à-dire les paramètres qui peuvent être None
-
+from datetime import date
 import models
 
 # Consultation 
@@ -22,12 +22,14 @@ def get_consultation(db:Session,consultation_id=int, patient_id=int, medecin_id=
 # Récupère une liste de consultation avec des filtres optionnels.
 def get_consultations(
         db: Session,
-        skip: int = 0, # pour ignorer les premiers enregistrements
+        skip: int = 0, # pour ignorer les premiers enregistrements 
         limit: int = 100,
         consultation_id: Optional[int] = None,
         patient_id: Optional[int] = None,
         medecin_id: Optional[int] = None,
-        diagnostic_id: Optional[int] = None 
+        diagnostic_id: Optional[int] = None,
+        date_consultation: Optional[date] = None,
+        sum: Optional[int] = None
 ):
     # Récupère une liste de consultation avec des filtres optionnels.
     query = db.query(models.Consultation).options(
@@ -44,6 +46,10 @@ def get_consultations(
         query = query.filter(models.Consultation.medecin_id == medecin_id)
     if diagnostic_id:
         query = query.filter(models.Consultation.diagnostic_id == diagnostic_id)
+    if date_consultation:
+        query = query.filter(models.Consultation.date_consultation == date_consultation)
+    if sum:
+        query = query.filter(models.Consultation.sum == sum)
     
     return query.offset(skip).limit(limit).all()
     # offset(skip) permet de sauter les premiers enregistrements
@@ -70,17 +76,17 @@ def get_patients(
     query = db.query(models.PatientDim)
 
     if patient_id:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{patient_id}%"))
+        query = query.filter(models.PatientDim.patient_id == patient_id)
     if nom:
-        query = filter(models.PatientDim.nom.ilike(f"%{nom}%"))
+        query = query.filter(models.PatientDim.nom == nom)
     if prenom:
-        query = filter(models.PatientDim.prenom.ilike(f"%{prenom}%"))
+        query = query.filter(models.PatientDim.prenom == prenom)
     if sexe:
-        query = filter(models.PatientDim.sexe.ilike(f"%{sexe}%"))
+        query = query.filter(models.PatientDim.sexe == sexe)
     if situation_matrimonial:
-        query = filter(models.PatientDim.situation_matrimonial.ilike(f"%{situation_matrimonial}%"))
+        query = query.filter(models.PatientDim.situation_matrimonial == situation_matrimonial)
     if statut_professionel:
-        query = filter(models.PatientDim.statut_professionel.ilike(f"%{nom}%"))
+        query = query.filter(models.PatientDim.statut_professionel == statut_professionel)
 
     return query.offset(skip).limit(limit).all() 
     # offset(skip) permet de sauter les premiers enregistrements
@@ -104,11 +110,11 @@ def get_medecins(
     query = db.query(models.MedecinDim)
 
     if medecin_id:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{medecin_id}%")) 
+        query = query.filter(models.MedecinDim.medecin_id == medecin_id) 
     if nom_medecin:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{nom_medecin}%")) 
+        query = query.filter(models.MedecinDim.nom_medecin == nom_medecin) 
     if service_medical:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{service_medical}%")) 
+        query = query.filter(models.MedecinDim.service_medical == service_medical) 
 
     return query.offset(skip).limit(limit).all() 
     # offset(skip) permet de sauter les premiers enregistrements
@@ -133,13 +139,31 @@ def get_diagnostics(
     query = db.query(models.DiagnosticDim)
     
     if diagnostic_id:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{diagnostic_id}%"))
+        query = query.filter(models.DiagnosticDim.diagnostic_id == diagnostic_id)
     if gravite:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{gravite}%"))
+        query = query.filter(models.DiagnosticDim.gravite == gravite)
     if etat_sortie:
-        query = filter(models.PatientDim.patient_id.ilike(f"%{etat_sortie}%"))
+        query = query.filter(models.DiagnosticDim.etat_sortie == etat_sortie)
 
     return query.offset(skip).limit(limit).all() 
     # offset(skip) permet de sauter les premiers enregistrements 
+
+# Requete Analytique
+# Recuperer le nombre total de consultations
+def get_total_consultations(db: Session): 
+    """Récupère le nombre total de consultations."""
+    return db.query(models.Consultation).count()
+# Recuperer le total de patients
+def get_total_patients(db: Session): 
+    """Récupère le nombre total de patients."""
+    return db.query(models.PatientDim).count()
+# Recuperer le total de medecins
+def get_total_medecins(db: Session): 
+    """Récupère le nombre total de medecins."""
+    return db.query(models.MedecinDim).count()
+# Recuperer le total de diagnostics
+def get_total_diagnostics(db: Session): 
+    """Récupère le nombre total de diagnostics."""
+    return db.query(models.DiagnosticDim).count()
 
 
