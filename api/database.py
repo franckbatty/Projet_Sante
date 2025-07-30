@@ -22,7 +22,7 @@ if not SQLALCHEMY_DATABASE_URL:
     raise Exception("La variable DATABASE_URL n'est pas définie !")
 
 # Créer un moteur de base de données (engine) qui établit la connexion avec notre base PostgreSQL.
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL+ "?sslmode=require")
 
 # Définir SessionLocal, qui permet de créer des sessions pour interagir avec la base de données.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
