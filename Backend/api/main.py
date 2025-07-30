@@ -8,6 +8,8 @@ from .database import SessionLocal
 from datetime import date
 from . import query_helpers as helpers
 from . import schemas 
+from . import models
+
 
 api_description = """ 
 Bienvenue dans l'API Sante 
