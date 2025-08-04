@@ -1,74 +1,72 @@
-# importation des modules nécessaires
-"""SQLAlchemy models"""
-from sqlalchemy import Column, Integer, String, Float, ForeignKey, PrimaryKeyConstraint, Date
-from sqlalchemy.orm import relationship # permet des relations de clé étrangère entre les tables.
+"""Modèles SQLAlchemy pour SQLite - Commentés"""
+from sqlalchemy import Column, Integer, String, Date, ForeignKey, PrimaryKeyConstraint
+from sqlalchemy.orm import relationship
 from database import Base
 
-
-# Table de Fait : Consultation 
+# 🧮 Table de faits : Consultation
 class Consultation(Base):
-    __tablename__ = "fait_consultation"
+    __tablename__ = "fait_consultation" # Nom de la table de faits sur base de données postgreSQL
+    # ➕ Clé primaire composite : identifie chaque consultation de manière unique
     __table_args__ = (
         PrimaryKeyConstraint('consultation_id', 'patient_id', 'medecin_id', 'diagnostic_id'),
-        {'schema': 'sante_gold'}
     )
-    ## consultation_id est la clé primaire de ma table de fait de la couche gold à laquelle je calcule ma mesure.
+ 
+    # 🔑 Identifiants et mesure
     consultation_id = Column(Integer)
-    patient_id = Column(Integer, ForeignKey('sante_gold.dim_patient.patient_id'))
-    medecin_id = Column(Integer, ForeignKey('sante_gold.dim_medecins.medecin_id'))
-    diagnostic_id = Column(Integer, ForeignKey('sante_gold.dim_diagnostics.diagnostic_id'))
-    date_consultation = Column(Date)
-    sum = Column(Integer)
+    patient_id = Column(Integer, ForeignKey('dim_patient.patient_id'))  # lien vers la dimension Patient
+    medecin_id = Column(Integer, ForeignKey('dim_medecins.medecin_id'))  # lien vers la dimension Médecin
+    diagnostic_id = Column(Integer, ForeignKey('dim_diagnostics.diagnostic_id'))  # lien vers la dimension Diagnostic
+    date_consultation = Column(Date)  # 📅 Date de la consultation
+    sum = Column(Integer)  # 📊 Mesure agrégée (ex : coût, score, etc.)
 
-    # Relations vers les dimensions
-    patient = relationship(
-        "PatientDim",
-        back_populates="consultation",
-        primaryjoin="Consultation.patient_id == PatientDim.patient_id"
-    )
-    medecin = relationship(
-        "MedecinDim",
-        back_populates="consultation",
-        primaryjoin="Consultation.medecin_id == MedecinDim.medecin_id"
-    )
-    diagnostic = relationship(
-        "DiagnosticDim",
-        back_populates="consultation",
-        primaryjoin="Consultation.diagnostic_id == DiagnosticDim.diagnostic_id"
-    )
+    # 🔄 Relations vers les dimensions (bidirectionnelles)
+    patient = relationship("PatientDim", back_populates="consultation")
+    medecin = relationship("MedecinDim", back_populates="consultation")
+    diagnostic = relationship("DiagnosticDim", back_populates="consultation")
+    # back_populates permet de créer une relation bidirectionnelle entre les tables de faits et de dimensions,
+    # facilitant ainsi les requêtes et la navigation dans les données.
 
-# Dimension : Patient 
+# 👤 Dimension : Patient
 class PatientDim(Base):
     __tablename__ = "dim_patient"
-    __table_args__ = ({"schema": "sante_gold"},)
-    
+
+    # 🔑 Clé primaire
     patient_id = Column(Integer, primary_key=True)
+
+    # 📌 Attributs du patient
     nom = Column(String)
     prenom = Column(String)
     sexe = Column(String)
-    situation_matrimonial = Column(String) 
+    situation_matrimonial = Column(String)
     statut_professionel = Column(String)
 
+    # 🔄 Relation inverse : toutes les consultations associées
     consultation = relationship("Consultation", back_populates="patient")
 
-#  Dimension : Médecin 
-class MedecinDim(Base): 
+# 🩺 Dimension : Médecin
+class MedecinDim(Base):
     __tablename__ = "dim_medecins"
-    __table_args__ = ({"schema": "sante_gold"},)
 
+    # 🔑 Clé primaire
     medecin_id = Column(Integer, primary_key=True)
+
+    # 📌 Attributs du médecin
     nom_medecin = Column(String)
     service_medical = Column(String)
 
+    # 🔄 Relation inverse
     consultation = relationship("Consultation", back_populates="medecin")
 
-#  Dimension : Diagnostic 
+# 🧾 Dimension : Diagnostic
 class DiagnosticDim(Base):
     __tablename__ = "dim_diagnostics"
-    __table_args__ = ({"schema": "sante_gold"},)
 
+    # 🔑 Clé primaire
     diagnostic_id = Column(Integer, primary_key=True)
+
+    # 📌 Attributs du diagnostic
     gravite = Column(String)
     etat_sortie = Column(String)
 
+    # 🔄 Relation inverse
     consultation = relationship("Consultation", back_populates="diagnostic")

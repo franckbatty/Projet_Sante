@@ -7,8 +7,12 @@ from models import Consultation, PatientDim, MedecinDim, DiagnosticDim
 db = SessionLocal()
 
 #%%
+count = db.query(Consultation).count()
+print(f"Nombre total de consultations : {count}")
+
+#%%
 # Tester la recuperation de quelques consultations
-consultations = db.query(Consultation).limit(5).all()
+consultations = db.query(Consultation).limit(5).all() 
 for consultation in consultations:
     print(f"consultation_id : {consultation.consultation_id}, patient_id : {consultation.patient_id}, medecin_id : {consultation.medecin_id}, diagnostic_id : {consultation.diagnostic_id}, date_consultation : {consultation.date_consultation}, Frais : {consultation.sum} ")
 

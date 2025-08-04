@@ -39,3 +39,7 @@ LEFT JOIN sante_silver.diagnostics AS D ON consul.consultation_id = D.consultati
 GROUP BY consul.consultation_id, P.patient_id, M.medecin_id, D.diagnostic_id, consul.date_consultation
 );
 SELECT * FROM sante_gold.Fait_consultation; 
+
+-- Verification des vues 
+SELECT table_name FROM information_schema.views
+WHERE table_schema = 'sante_gold';
