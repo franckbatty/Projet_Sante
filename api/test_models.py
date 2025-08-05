@@ -31,7 +31,7 @@ for medecin in medecins:
 
 # %%
 # Affichage de quelques information de : Diagnostic
-diagnostics = db.query(DiagnosticDim).limit(5)
+diagnostics = db.query(DiagnosticDim).limit(15)
 
 for diagnostic in diagnostics:
     print(f"diagnostic_id : {diagnostic.diagnostic_id}, gravite : {diagnostic.gravite}, etat_sortie : {diagnostic.etat_sortie}")
