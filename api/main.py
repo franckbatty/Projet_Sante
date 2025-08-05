@@ -12,7 +12,7 @@ import schemas
 api_description = """ 
 Bienvenue dans l'API Sante 
 
-Cette API RESTful expose les données analytiques issues d’un entrepôt e-commerce structuré (couche Gold) 
+Cette API RESTful expose les données analytiques issues d’un entrepôt Sante structuré (couche Gold) 
 à des fins de reporting, d’exploration ou d’intégration front.
 
 Inspirée des bonnes pratiques modernes, elle permet d’interroger les consultations, les patients, les medecins et les diagnostic 
@@ -37,7 +37,7 @@ Tous les endpoints supportent la pagination (`skip`, `limit`) et des filtres opt
 
 # --- Initialisation de l'application FastAPI ---
 app = FastAPI(
-    title="E_commerce API", # 
+    title="Sante API", # 
     description = api_description,
     version = "0.1"
 )
